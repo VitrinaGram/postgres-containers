@@ -1,11 +1,11 @@
 # vim:set ft=dockerfile:
-#
+
 # Copyright The CloudNativePG Contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
+# You may obtain a copy of the License at
+#
 #    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -28,29 +28,42 @@ LABEL org.opencontainers.image.description="This Docker image contains PostgreSQ
 
 COPY requirements.txt /
 
-# Install additional extensions
+# Install additional extensions and the build dependencies for wal2json
 RUN set -xe; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
-		"postgresql-${PG_MAJOR}-pgaudit" \
-		"postgresql-${PG_MAJOR}-pgvector" \
-		"postgresql-${PG_MAJOR}-pg-failover-slots" \
-	; \
-	rm -fr /tmp/* ; \
-	rm -rf /var/lib/apt/lists/*;
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        "postgresql-${PG_MAJOR}-pgaudit" \
+        "postgresql-${PG_MAJOR}-pgvector" \
+        "postgresql-${PG_MAJOR}-pg-failover-slots" \
+        git \
+        build-essential \
+        postgresql-server-dev-${PG_MAJOR} \
+    ; \
+    # Clone and build wal2json
+    git clone https://github.com/eulerto/wal2json -b master --single-branch /wal2json \
+    && cd /wal2json \
+    && USE_PGXS=1 make && USE_PGXS=1 make install \
+    && cd / \
+    && rm -rf /wal2json \
+    ; \
+    # Clean up
+    apt-get purge -y --auto-remove git build-essential postgresql-server-dev-${PG_MAJOR} \
+    ; \
+    rm -fr /tmp/* ; \
+    rm -rf /var/lib/apt/lists/*;
 
 # Install barman-cloud
 RUN set -xe; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
-		python3-pip \
-		python3-psycopg2 \
-		python3-setuptools \
-	; \
-	pip3 install --upgrade pip; \
-# TODO: Remove --no-deps once https://github.com/pypa/pip/issues/9644 is solved
-	pip3 install --no-deps -r requirements.txt; \
-	rm -rf /var/lib/apt/lists/*;
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        python3-pip \
+        python3-psycopg2 \
+        python3-setuptools \
+    ; \
+    pip3 install --upgrade pip; \
+    # TODO: Remove --no-deps once https://github.com/pypa/pip/issues/9644 is solved
+    pip3 install --no-deps -r requirements.txt; \
+    rm -rf /var/lib/apt/lists/*;
 
 # Change the uid of postgres to 26
 RUN usermod -u 26 postgres
