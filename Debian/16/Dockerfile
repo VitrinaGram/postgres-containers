@@ -51,6 +51,7 @@ RUN set -xe; \
     ; \
     rm -fr /tmp/* ; \
     rm -rf /var/lib/apt/lists/*;
+RUN echo "shared_preload_libraries = 'wal2json'" >> /var/lib/postgresql/data/postgresql.conf
 
 # Install barman-cloud
 RUN set -xe; \
