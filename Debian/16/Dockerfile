@@ -30,7 +30,7 @@ COPY requirements.txt /
 RUN mkdir wal2json
 # Install additional extensions and the build dependencies for wal2json
 # RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
-COPY ..\..\wal2json /wal2json
+COPY /wal2json /wal2json
 RUN set -xe; \
     apt-get update; \
     apt-get install -y --no-install-recommends \

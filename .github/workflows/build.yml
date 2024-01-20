@@ -48,7 +48,7 @@ jobs:
       with:
         repository: eulerto/wal2json
         ref: master
-        path: wal2json
+        path: Debian/16/wal2json
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
       with:
