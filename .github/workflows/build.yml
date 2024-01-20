@@ -44,7 +44,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
     - name: Checkout wal2json
-      uses: actions/checkout@v5
+      uses: actions/checkout@v4
       with:
         repository: eulerto/wal2json
         ref: master
