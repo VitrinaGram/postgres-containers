@@ -43,7 +43,12 @@ jobs:
         echo "::set-output name=short_sha::${GITHUB_SHA::8}"
     - name: Checkout Code
       uses: actions/checkout@v4
-
+    - name: Checkout wal2json
+      uses: actions/checkout@v2
+      with:
+        repository: eulerto/wal2json
+        ref: master
+        path: wal2json
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
       with:
