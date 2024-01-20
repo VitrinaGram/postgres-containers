@@ -29,6 +29,8 @@ LABEL org.opencontainers.image.description="This Docker image contains PostgreSQ
 COPY requirements.txt /
 
 # Install additional extensions and the build dependencies for wal2json
+RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
+
 RUN set -xe; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -40,7 +42,7 @@ RUN set -xe; \
         postgresql-server-dev-${PG_MAJOR} \
     ; \
     # Clone and build wal2json
-    git clone https://github.com/eulerto/wal2json -b master --single-branch /wal2json \
+    git clone git://github.com/eulerto/wal2json.git -b master --single-branch /wal2json \
     && cd /wal2json \
     && USE_PGXS=1 make && USE_PGXS=1 make install \
     && cd / \
@@ -51,7 +53,6 @@ RUN set -xe; \
     ; \
     rm -fr /tmp/* ; \
     rm -rf /var/lib/apt/lists/*;
-RUN echo "shared_preload_libraries = 'wal2json'" >> /var/lib/postgresql/data/postgresql.conf
 
 # Install barman-cloud
 RUN set -xe; \
