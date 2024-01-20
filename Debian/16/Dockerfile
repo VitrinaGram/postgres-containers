@@ -37,21 +37,21 @@ RUN set -xe; \
         "postgresql-${PG_MAJOR}-pgaudit" \
         "postgresql-${PG_MAJOR}-pgvector" \
         "postgresql-${PG_MAJOR}-pg-failover-slots" \
-        git \
         build-essential \
         postgresql-server-dev-${PG_MAJOR} \
     ; \
-    # Clone and build wal2json
-    && cd /wal2json \
+    # Соберите и установите wal2json
+    cd /wal2json \
     && USE_PGXS=1 make && USE_PGXS=1 make install \
     && cd / \
     && rm -rf /wal2json \
     ; \
-    # Clean up
-    apt-get purge -y --auto-remove git build-essential postgresql-server-dev-${PG_MAJOR} \
+    # Очистка
+    apt-get purge -y --auto-remove build-essential postgresql-server-dev-${PG_MAJOR} \
     ; \
     rm -fr /tmp/* ; \
     rm -rf /var/lib/apt/lists/*;
+
 
 # Install barman-cloud
 RUN set -xe; \
