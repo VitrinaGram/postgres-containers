@@ -29,7 +29,7 @@ LABEL org.opencontainers.image.description="This Docker image contains PostgreSQ
 COPY requirements.txt /
 
 # Install additional extensions and the build dependencies for wal2json
-RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
+# RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
 
 RUN set -xe; \
     apt-get update; \
