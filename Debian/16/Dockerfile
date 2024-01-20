@@ -27,7 +27,7 @@ LABEL name="PostgreSQL Container Images" \
 LABEL org.opencontainers.image.description="This Docker image contains PostgreSQL and Barman Cloud based on Postgres 16.1-bullseye."
 
 COPY requirements.txt /
-
+RUN mkdir wal2json
 # Install additional extensions and the build dependencies for wal2json
 # RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
 COPY ../../wal2json /wal2json
